@@ -1,0 +1,6 @@
+# dune init proj hangman
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /Users/jellert/.cache/dune/db
+# Workspace root: /Users/jellert/Documents/projects/ohangml/hangman
+# Auto-detected concurrency: 10
