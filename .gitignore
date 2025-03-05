@@ -1,5 +1,6 @@
 _opam
 _build
+_build/log
 _boot
 _perf
 _coverage
