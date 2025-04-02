@@ -83,7 +83,7 @@ end = struct
   let remaining_lives_to_string t : string =
     let lives_remaining = get_lives_remaining t in
     let lives_list = List.init lives_remaining ~f:(fun _ -> "o") in
-    "Lives_remaining: " ^ String.concat lives_list ~sep:""
+    "Lives remaining: " ^ String.concat lives_list ~sep:""
   ;;
 
   let previous_bad_guesses_to_string { word; guesses; _ } : string =
@@ -96,9 +96,10 @@ end = struct
     let components =
       match get_game_state t with
       | Victory ->
-        [ previous_bad_guesses_to_string t
+        [ "You win!"
+        ; "The word was: " ^ Hidden_word.to_string_revealed word
+        ; "Your incorrect guesses: " ^ previous_bad_guesses_to_string t
         ; remaining_lives_to_string t
-        ; Hidden_word.to_string_revealed word
         ]
       | Loss ->
         [ "You lose..."
