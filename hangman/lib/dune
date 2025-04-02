@@ -1,2 +1,3 @@
 (library
- (name hangman))
+ (name hangman)
+ (libraries core))
