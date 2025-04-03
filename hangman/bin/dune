@@ -1,4 +1,4 @@
 (executable
  (public_name hangman)
  (name main)
- (libraries hangman))
+ (libraries core hangman))

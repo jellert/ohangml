@@ -19,15 +19,17 @@ end = struct
 
     let to_string_given_guesses (t : t) (guesses : Guesses.t) : string =
       let word_as_char_list = String.to_list t in
-      let censored_word_as_list =
+      let hidden_word_as_list =
         List.map word_as_char_list ~f:(fun c ->
-          if List.mem guesses c ~equal:Char.equal then String.of_char c else "_")
+          if List.mem guesses c ~equal:Char.equal || not (Char.is_alpha c)
+          then String.of_char c
+          else "_")
       in
-      String.concat censored_word_as_list ~sep:" "
+      String.concat hidden_word_as_list ~sep:" "
     ;;
 
     let get_bad_guesses (t : t) (guesses : Guesses.t) : Guesses.t =
-      List.filter guesses ~f:(fun guess -> String.contains t guess)
+      List.filter guesses ~f:(fun guess -> not (String.contains t guess))
     ;;
 
     let how_many_bad_guesses (t : t) (guesses : Guesses.t) : int =
@@ -35,7 +37,8 @@ end = struct
     ;;
 
     let is_revealed_with_guesses (t : t) (guesses : Guesses.t) : bool =
-      String.for_all t ~f:(fun c -> List.exists guesses ~f:(Char.equal c))
+      String.for_all t ~f:(fun c ->
+        List.exists guesses ~f:(Char.equal c) || not (Char.is_alpha c))
     ;;
   end
 
@@ -60,11 +63,14 @@ end = struct
   let register_guess t guess_possibly_lowercase =
     let { guesses; _ } = t in
     let guess = Char.uppercase guess_possibly_lowercase in
-    match List.mem guesses guess ~equal:Char.equal with
-    | true -> Or_error.error_string ("Already guessed " ^ String.of_char guess)
-    | false ->
-      Or_error.return
-        { t with guesses = List.sort (guess :: guesses) ~compare:Char.compare }
+    if not (Char.is_alpha guess)
+    then Or_error.error_string (String.of_char guess ^ " is not a letter")
+    else (
+      match List.mem guesses guess ~equal:Char.equal with
+      | true -> Or_error.error_string ("Already guessed " ^ String.of_char guess)
+      | false ->
+        Or_error.return
+          { t with guesses = List.sort (guess :: guesses) ~compare:Char.compare })
   ;;
 
   let get_lives_remaining { word; total_lives; guesses } =
