@@ -1,8 +1,14 @@
 open! Core
 open Game
+open Dictionary
 
 let run_game () =
-  let game = Game.create "Hello, world!" 3 in
+  let dictionary =
+    Dictionary.of_list
+      [ "Hello, world!"; "Hey! Who turned out the lights?"; "Massachusetts" ]
+  in
+  let starting_word = Dictionary.random_word dictionary in
+  let game = Game.create starting_word 3 in
   let guesses = [ 'e'; 'o'; 'b'; 'h'; 'L'; 'r'; 'd' ] in
   let game_or_error =
     List.fold guesses ~init:(Ok game) ~f:(fun game_or_error c ->
